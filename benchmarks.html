@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Api Benchmark :: report</title>
+    <!--[if lt IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/jqPlot/1.0.8/excanvas.min.js"></script><![endif]-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqPlot/1.0.8/jquery.jqplot.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqPlot/1.0.8/plugins/jqplot.canvasTextRenderer.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqPlot/1.0.8/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqPlot/1.0.8/plugins/jqplot.highlighter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqPlot/1.0.8/plugins/jqplot.cursor.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.6.1/lodash.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqPlot/1.0.8/jquery.jqplot.min.css" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.0/styles/dark.min.css" type="text/css" />
+
+    <style type="text/css">
+      .jqplot-target {
+        color: #F1F1F1;
+      }
+      table.jqplot-table-legend, table.jqplot-cursor-legend {
+        background-color: rgba(101, 0, 253, 0.89)
+      }
+
+      body {
+        background: #3D3D3D;
+        color: #F1F1F1;
+      }
+
+      a {
+        color: #6699FF;
+      }
+
+      #report-details, #charts {
+        width: 100%;
+        float: left;
+        font-family: "Trebuchet MS",Arial,Helvetica,sans-serif;
+      }
+
+      #report-details {
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .buttons {
+        width: 100%;
+        border-bottom: 1px solid rgb(75, 72, 72);
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+        text-align: right;
+      }
+
+      .button {
+        margin-right: 10px;
+        padding: 6px;
+        text-decoration: none;
+      }
+
+      .button.selected {
+        background-color: rgb(56, 56, 56);
+      }
+
+      .chart {
+        width: 60%;
+        height: 450px;
+        float: left;
+      }
+
+      .distchart {
+        width: 96%;
+        height: 450px;
+        float: left;
+      }
+
+      .panel {
+        height: 450px;
+        overflow-y: auto;
+      }
+
+      .route {
+        width: 90%;
+        margin: 3%;
+        padding: 2%;
+        float: left;
+        background-color: #000000;
+        border-radius: 15px;
+      }
+      .stats-details {
+        font-family: "Trebuchet MS",Arial,Helvetica,sans-serif;
+        font-size: 15px;
+        float: left;
+        width: 36%;
+        padding: 2%;
+      }
+
+      .green {
+        color: green;
+      }
+
+      .red {
+        color: red;
+      }
+
+      .hide {
+        display:none;
+      }
+
+      pre code {
+        overflow-x: auto;
+      }
+
+    </style>
+  </head>
+  <body>
+    <script><!--
+    var data={"benchmark":{"server":{"home":{"name":"server/home","href":"http://ec2-54-148-142-92.us-west-2.compute.amazonaws.com/api/","stats":{"sample":[1.6276369499999999,0.673476318,0.672266179,0.673226184,0.662167555,0.682091437,0.673727273,0.669402005,0.64075955,0.62684676,0.608363426,0.633343426,0.587091646,0.666965025,0.65583503,0.657014265,1.839793335,0.632346293,0.711390781,0.71599001,0.720340546,0.70338355,0.638974518,0.653655949,0.622727517,0.627620305,0.635276384,0.627249529,0.605795541,0.577313723,0.975641438,0.597293835,0.642189959,0.635178027,0.606561272,0.653951942,0.615313615,0.607719202,0.622694272,0.615660833,0.638305059,0.611625872,0.616715685,0.603194898,0.652017036,0.586588845,0.604772934,0.610502792,0.608412102,0.62050352,0.61480744,0.631789935,0.629682408,0.584396301,0.607975654,0.581823615,0.640397088,0.619338246,0.625075234,0.61168763,1.676423225,0.647921015,0.700347315,0.687837604,0.672410586,0.73570372,0.670269962,0.715858414,0.704105626,0.625310968,0.589933021,0.610979794,0.607589612,0.604119597,0.67546527,1.632807044,0.64183714,0.611067457,0.580262928,0.613503158,0.653572492,0.601478025,0.610025187,0.598151411,0.656101745,0.648424885,0.998642388,0.687961693,0.61548915,0.62652743,0.616863202,0.616748129,0.748372695,1.171818373,0.733762879,0.7651098,1.7556755659999999,1.7153196099999999,0.784828156,0.755864088],"mean":0.7195837805899999,"singleMean":0.14391675611799998,"variance":0.07020220127229601,"deviation":0.26495698004071533,"sem":0.026495698004071533,"moe":0.051931568087980204,"rme":7.216889747765098,"p75":0.68043489525,"p95":1.6325485392999999,"p99":1.8389521573099996,"p999":1.839793335},"errors":{},"options":{"method":"get","concurrencyLevel":5,"start":"2017-08-03T13:45:28.125Z","end":"2017-08-03T13:45:43.081Z"},"request":{},"response":{"header":{"x-powered-by":"Express","access-control-allow-origin":"*","x-ratelimit-limit":"900","x-ratelimit-remaining":"896","content-type":"application/json; charset=utf-8","content-length":"62","etag":"W/\"3e-QBQjIPpV/X8TXp7nfbZlOBm7Esc\"","date":"Thu, 03 Aug 2017 13:45:28 GMT","connection":"close"},"statusCode":200,"body":"{\"success\":true,\"message\":\"Welcome to Tasting Spoon Backend.\"}","type":"application/json"},"hz":6.948461228379006},"restaurantList":{"name":"server/restaurantList","href":"http://ec2-54-148-142-92.us-west-2.compute.amazonaws.com/api/v1/restaurant/list","stats":{"sample":[1.9312713110000002,1.454038652,1.40378704,1.500537439,1.4529065079999999,1.159884573,2.7469628,2.990698602,2.827640953,1.188523256,0.98651337,1.025169844,1.320237077,0.91782489,0.897836259,0.908894861,0.930254543,1.31546737,0.925554214,0.891719345,0.876460475,0.836044532,0.841241589,0.909289948,1.900116647,1.24878964,0.930708452,0.866289253,0.873032835,0.917967354,0.931823668,0.929955433,0.987915568,0.935417045,0.932532815,0.89258115,0.860539383,0.906925528,2.06757788,0.89494761,0.872064405,0.859350833,0.908723614,0.949148968,0.904440065,0.928725725,1.434409346,0.920507256,0.95762228,0.961230327,0.98917578,1.040075508,1.141366388,1.1944167509999999,1.162325498,1.159698734,1.6390513370000002,1.147166578,1.184977363,2.872656846,1.05018189,0.906709796,0.890783785,0.855793935,0.885393687,0.908461731,0.86791737,0.867792904,0.852702093,0.838984025,0.844164872,0.890647568,0.847554284,0.853674503,0.851691792,2.446650723,0.891779622,0.832829576,0.959438266,0.916549434,1.179144226,0.938178827,0.887925193,0.899467235,0.870433848,0.902489864,0.850798089,0.838296413,0.890643517,0.863695492,0.824689614,0.876950785,0.868638025,0.821961486,1.223086455,1.223691168,0.874373605,0.848329661,0.826113564,0.876796332],"mean":1.1018841856900001,"singleMean":0.22037683713800002,"variance":0.20908550671430287,"deviation":0.4572586868658734,"sem":0.04572586868658734,"moe":0.08962270262571118,"rme":8.133586432188372,"p75":1.15983811325,"p95":2.4276970808499954,"p99":2.9895181844399996,"p999":2.990698602},"errors":{},"options":{"method":"post","concurrencyLevel":5,"start":"2017-08-03T13:45:43.095Z","end":"2017-08-03T13:46:05.607Z"},"request":{"headers":{"Content-Type":"Application/JSON","ts-backend-token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Imd1ZXN0IiwiaWF0IjoxNTAxNzY3MDIxLCJleHAiOjE1MDQzNTkwMjF9.pQ2IXKmlLEue13cqZiXclOLLvJEGwIaHE2fc94VaUAE"},"data":"{\"city_address\":\"New York\",\"search_params\":\"pizza\"}"},"response":{"header":{"x-powered-by":"Express","access-control-allow-origin":"*","x-ratelimit-limit":"900","x-ratelimit-remaining":"795","content-type":"application/json; charset=utf-8","content-length":"3220","etag":"W/\"c94-Kd9k0DtN7i9alaxEBzH+K9PbqFs\"","date":"Thu, 03 Aug 2017 13:45:44 GMT","connection":"close"},"statusCode":200,"body":"{\"success\":true,\"data\":[{\"id\":\"8281b9237d8a5333144247b91fbcb2f3d548bfb0fbc2a739\",\"name\":\"Big Al's Pizza\",\"image_url\":\"https://eatstreet-static.s3.amazonaws.com/assets/images/restaurant_logos/big-als-pizza-21407_1407868358668.png\",\"food_types\":[\"Pizza\",\"Italian\",\"Pasta\"],\"contact\":\"(212) 964-3269\",\"location\":\"9 Thames St,New York,NY\",\"zip\":\"10006\",\"open_status\":true},{\"id\":\"8281b9237d8a5333884225aec137a02aae4b68948f9c5f8c\",\"name\":\"Clinton Square Pizza\",\"image_url\":\"https://eatstreet-static.s3.amazonaws.com/assets/images/restaurant_logos/clinton-square-pizza-16694_1403128417086.png\",\"food_types\":[\"Pizza\",\"\"],\"contact\":\"(646) 678-4294\",\"location\":\"201 Clinton St,New York,NY\",\"zip\":\"10002\",\"open_status\":false},{\"id\":\"8281b9237d8a5333da325d7782b35bdb2c3b549d50d1432e\",\"name\":\"Dona Bella Pizza\",\"image_url\":\"https://eatstreet-static.s3.amazonaws.com/assets/images/restaurant_logos/dona-bella-pizza-7558_1389224492802.png\",\"food_types\":[\"Pizza\"],\"contact\":\"(212) 374-1130\",\"location\":\"154 Church St,New York,NY\",\"zip\":\"10007\",\"open_status\":false},{\"id\":\"8281b9237d8a5333884225aec137a02a674e8c2a22cde8fa\",\"name\":\"Majestic Pizza & Calzone\",\"image_url\":\"https://eatstreet-static.s3.amazonaws.com/assets/images/restaurant_logos/majestic-pizza-and-calzone-17557_1404853662575.png\",\"food_types\":[\"Pizza\",\"\"],\"contact\":\"(212) 349-4046\",\"location\":\"8 Cortlandt St,New York,NY\",\"zip\":\"10007\",\"open_status\":true},{\"id\":\"8281b9237d8a5333f15b4f2e73e761800ca154b2140b7133\",\"name\":\"Neapolitan Express\",\"image_url\":\"https://eatstreet-static.s3.amazonaws.com/assets/images/restaurant_logos/neapolitan-express-32806_1442187667561.png\",\"food_types\":[\"Subs & Sandwiches\",\"Food Truck\",\"Pizza\",\"Food Trucks\"],\"contact\":\"(646) 918-6169\",\"location\":\"40 Wall St,New York,NY\",\"zip\":\"10260\",\"open_status\":false},{\"id\":\"8281b9237d8a5333884225aec137a02a8aed23699213a77e\",\"name\":\"Papa John's Pizza - Grand St.\",\"image_url\":\"https://eatstreet-static.s3.amazonaws.com/assets/images/restaurant_logos/papa-johns-pizza-grand-st-17267_1404251729959.png\",\"food_types\":[\"Pizza\"],\"contact\":\"(212) 979-7272\",\"location\":\"343 Grand St,New York,NY\",\"zip\":\"10002\",\"open_status\":false},{\"id\":\"8281b9237d8a5333884225aec137a02a93366c4a026522b3\",\"name\":\"Picasso Pizza\",\"image_url\":\"https://eatstreet-static.s3.amazonaws.com/assets/images/restaurant_logos/picasso-pizza-16316_1402606739827.png\",\"food_types\":[\"Pizza\"],\"contact\":\"(212) 321-2616\",\"location\":\"303 South End Ave,New York,NY\",\"zip\":\"10280\",\"open_status\":false},{\"id\":\"8281b9237d8a5333884225aec137a02aa792fa8f16d7e01d\",\"name\":\"Pizza & Pasta Delight\",\"image_url\":\"https://eatstreet-static.s3.amazonaws.com/assets/images/restaurant_logos/pizza-and-pasta-delight-17873_1405467624159.png\",\"food_types\":[\"Pizza\",\"Italian Food\",\"\"],\"contact\":\"(212) 349-6333\",\"location\":\"77 Fulton St,New York,NY\",\"zip\":\"10038\",\"open_status\":false},{\"id\":\"8281b9237d8a5333884225aec137a02ab3885140acd7ef18\",\"name\":\"Rossetti's Pizza\",\"image_url\":\"https://eatstreet-static.s3.amazonaws.com/assets/images/restaurant_logos/rossettis-pizza-10689_1398908488006.png\",\"food_types\":[\"Pizza\"],\"contact\":\"(212) 966-7178\",\"location\":\"114 Avenue of the Americas,New York,NY\",\"zip\":\"10013\",\"open_status\":false}],\"message\":\"Restaurant Lists.\"}","type":"application/json"},"hz":4.537681967791378},"restaurantDetail":{"name":"server/restaurantDetail","href":"http://ec2-54-148-142-92.us-west-2.compute.amazonaws.com/api/v1/restaurant/detail","stats":{"sample":[1.15321548,1.1682280170000001,1.1493821610000001,1.145751458,1.147316962,0.31696872,0.310842443,0.3150601,0.309455074,0.305912162,0.313566545,0.320792303,0.303582034,0.31551462,0.311808693,0.338601084,0.336562422,0.326669279,0.33431504,0.327143937,1.370236873,1.3663671530000001,1.366613366,1.350624553,1.35795324,0.335722337,0.319223403,0.324533111,0.325462179,0.345720274,0.329236089,0.325024763,0.322658727,0.324151211,0.32317611,0.304431277,0.316723187,0.306043325,0.318396762,0.320640155,1.4998001859999999,1.481300458,1.470131361,1.4812791650000001,1.44827017,0.352041278,0.349299954,0.34901483,0.33262896,0.338119379,0.323313016,0.315068547,0.297919156,0.317486302,0.297841963,0.304092388,0.320675467,0.295989902,0.307807509,0.310786376,1.43363787,1.413208863,1.416083022,1.409948231,1.40760215,0.303369278,0.30358133,0.312784567,0.307992579,0.333984135,0.306824337,0.310345661,0.338359955,0.341124627,0.31911163,0.309739614,0.301146692,0.31935888,0.303538084,0.295915036,1.317277026,1.310097609,1.26083431,1.26792698,1.261384141,0.299619204,0.307348231,0.309693139,0.326606702,0.317234821,0.298880426,0.288004957,0.315465105,0.314305363,0.313178479,0.296953842,0.312118952,0.299778894,0.312583404,0.311338623],"mean":0.5722477974500003,"singleMean":0.11444955949000006,"variance":0.2009136658377767,"deviation":0.4482339409703115,"sem":0.04482339409703115,"moe":0.08785385243018105,"rme":15.352414255095006,"p75":0.947323913,"p95":1.447538555,"p99":1.4996151887199998,"p999":1.4998001859999999},"errors":{"ECONNRESET":[{"code":"ECONNRESET","message":"socket hang up","pos":3},{"code":"ECONNRESET","message":"socket hang up","pos":4},{"code":"ECONNRESET","message":"socket hang up","pos":2},{"code":"ECONNRESET","message":"socket hang up","pos":0},{"code":"ECONNRESET","message":"socket hang up","pos":1},{"code":"ECONNRESET","message":"socket hang up","pos":23},{"code":"ECONNRESET","message":"socket hang up","pos":24},{"code":"ECONNRESET","message":"socket hang up","pos":21},{"code":"ECONNRESET","message":"socket hang up","pos":22},{"code":"ECONNRESET","message":"socket hang up","pos":20},{"code":"ECONNRESET","message":"socket hang up","pos":42},{"code":"ECONNRESET","message":"socket hang up","pos":41},{"code":"ECONNRESET","message":"socket hang up","pos":44},{"code":"ECONNRESET","message":"socket hang up","pos":40},{"code":"ECONNRESET","message":"socket hang up","pos":43},{"code":"ECONNRESET","message":"socket hang up","pos":61},{"code":"ECONNRESET","message":"socket hang up","pos":60},{"code":"ECONNRESET","message":"socket hang up","pos":63},{"code":"ECONNRESET","message":"socket hang up","pos":62},{"code":"ECONNRESET","message":"socket hang up","pos":64},{"code":"ECONNRESET","message":"socket hang up","pos":82},{"code":"ECONNRESET","message":"socket hang up","pos":80},{"code":"ECONNRESET","message":"socket hang up","pos":81},{"code":"ECONNRESET","message":"socket hang up","pos":83},{"code":"ECONNRESET","message":"socket hang up","pos":84}],"ECONNREFUSED":[{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":6},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":8},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":5},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":7},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":9},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":12},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":10},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":13},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":11},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":14},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":17},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":15},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":16},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":19},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":18},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":26},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":27},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":25},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":28},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":29},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":30},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":32},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":31},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":33},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":34},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":35},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":37},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":36},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":38},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":39},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":48},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":46},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":45},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":47},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":49},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":52},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":54},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":51},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":53},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":50},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":55},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":57},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":56},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":58},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":59},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":65},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":66},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":68},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":67},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":69},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":70},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":71},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":72},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":73},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":74},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":75},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":76},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":79},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":78},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":77},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":85},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":86},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":87},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":89},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":88},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":90},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":91},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":92},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":93},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":94},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":95},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":96},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":97},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":98},{"code":"ECONNREFUSED","message":"connect ECONNREFUSED 54.148.142.92:80","pos":99}]},"options":{"method":"post","concurrencyLevel":5,"start":"2017-08-03T13:46:05.610Z","end":"2017-08-03T13:46:17.090Z"},"request":{"headers":{"Content-Type":"Application/JSON","ts-backend-token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Imd1ZXN0IiwiaWF0IjoxNTAxNzY3MDIxLCJleHAiOjE1MDQzNTkwMjF9.pQ2IXKmlLEue13cqZiXclOLLvJEGwIaHE2fc94VaUAE"},"data":"{\"restaurant_id\":\"8281b9237d8a5333144247b91fbcb2f3d548bfb0fbc2a739\"}"},"response":false,"hz":8.737473560021646}}},"info":{"date":"2017-08-03T13:46:17.099Z","apiName":"server"}};
+    // --></script>
+    <div id="report">
+      <div id="report-details"><h1>Api Benchmark report</h1></div>
+      <div id="charts"></div>
+    </div>
+    <div style="text-align: center">
+    Generated by <a href="https://github.com/matteofigus/api-benchmark" target="_blank">api-benchmark</a><br /><br />
+    <iframe src="http://ghbtns.com/github-btn.html?user=matteofigus&repo=api-benchmark&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
+    </div>
+    <script>
+
+      var selectors = {
+        charts: '#charts',
+        reportDetails: '#report-details',
+        panel: '.panel',
+        panels: {
+          stats: '.stats',
+          distribution: '.distribution',
+          response: '.response',
+          request: '.request'
+        },
+        button: '.button',
+        buttons: {
+          stats: '.button-stats',
+          distribution: '.button-distribution',
+          response: '.button-response',
+          request: '.button-request'
+        }
+      };
+
+      var formatNumber = function(number) {
+        number = String(number).split('.');
+        return number[0].replace(/(?=(?:\d{3})+$)(?!\b)/g, ',') +
+          (number[1] ? '.' + number[1] : '');
+      };
+
+      var formatDate = function(date){
+        return date.replace(/T/g, ' ').replace(/Z/g, ' ');
+      };
+
+      var fixNumber = function(number, digits){
+        return formatNumber(number.toFixed(digits));
+      };
+
+      var decodeHtml = function(text){
+        return $('<div/>').text(text).html();
+      };
+
+      var templates = {
+        reportDetails: function(info){
+          var formattedDate = formatDate(info.date);
+          return 'Benchmarked ' + info.apiName + ' on ' + formattedDate;
+        },
+        route: function(routeData, i){
+          var errorsCount = 0,
+              errorsDesc = '(',
+              duration = (new Date(routeData.options.end) - new Date(routeData.options.start))/1e3;
+
+          for(var errorType in routeData.errors){
+            errorsCount += routeData.errors[errorType].length;
+            errorsDesc += routeData.errors[errorType].length + ' ' + errorType + ',';
+          }
+
+          if(errorsCount == 0)
+            errorsDesc = '';
+          else
+            errorsDesc = errorsDesc.substr(0, errorsDesc.length - 1) + ')';
+
+          var template = '<div class="route"><div class="buttons">' +
+            '<a href="#stats" class="button button-stats selected">Stats</a>' +
+            '<a href="#distribution" class="button button-distribution">Distribution</a>' +
+            '<a href="#request" class="button button-request">Request details</a>' +
+            '<a href="#response" class="button button-response">Response details</a>' +
+            '</div><div class="stats panel"><div class="chart" id="chart' + i + '"></div>' +
+            '<div class="stats-details"><ul><li>' + routeData.stats.sample.length + ' run' +
+            (routeData.stats.sample.length > 1 ? 's' : '') + ' sampled with concurrency: ' +
+            routeData.options.concurrencyLevel + '</li>';
+
+          if(routeData.options.expectedStatusCode)
+            template += '<li>Expected status code: ' + routeData.options.expectedStatusCode + '</li>';
+
+          if(routeData.options.maxMean)
+            template += '<li>Expected max mean: ' + routeData.options.maxMean + '</li>';
+
+          if(routeData.options.maxSingleMean)
+            template += '<li>(*) Expected max mean across all concurrent requests: ' + routeData.options.maxSingleMean + '</li>';
+
+          template += '</ul><ul><li>Started: ' + formatDate(routeData.options.start) + '</li>' +
+            '<li>Ended: ' + formatDate(routeData.options.end) + ' (' + duration + ' seconds)</li>' +
+            '<li>' + fixNumber(routeData.hz, 2) + ' ops/sec \xb1 ' + fixNumber(routeData.stats.rme, 2) + '%</li>' +
+
+            '<li class="' + (!errorsCount ? 'green' : 'red') + '">' + errorsCount + ' error' +
+            (errorsCount == 1 ? '' : 's') + ' ' + errorsDesc + '</li>' +
+
+            '<li>Sample arithmetic mean: ' + fixNumber(routeData.stats.mean, 6) + '</li>';
+
+          if(routeData.options.concurrencyLevel > 1)
+            template += '<li>Mean across all the concurrent requests: ' + fixNumber(routeData.stats.singleMean, 6) + '</li>';
+
+          template += '<li>Sample standard deviation: ' + fixNumber(routeData.stats.deviation, 6) + '</li>' +
+            '<li>Margin of error: ' + fixNumber(routeData.stats.moe, 6) + '</li>' +
+            '<li>The standard error of the mean: ' + fixNumber(routeData.stats.sem, 6) + '</li>' +
+            '<li>The sample variance: ' + fixNumber(routeData.stats.variance, 6) + '</li>' +
+            '</ul><ul><li>75% Percentile: ' + fixNumber(routeData.stats.p75, 6) + '</li>' +
+            '<li>95% Percentile: ' + fixNumber(routeData.stats.p95, 6) + '</li>' +
+            '<li>99% Percentile: ' + fixNumber(routeData.stats.p99, 6) + '</li>' +
+            '<li>99.9% Percentile: ' + fixNumber(routeData.stats.p999, 6) + '</li>' +
+            '</ul></div></div><div class="distribution panel"><div class="distchart" id="distchart' + i + '">' +
+            '</div></div><div class="request panel hide">Request: ' + routeData.options.method.toUpperCase() +
+            ' <a href="' + routeData.href + '" target="_blank">' +
+            routeData.href + '</a><br />Concurrency level: ' + routeData.options.concurrencyLevel + '<br />';
+
+          if(routeData.options.delay)
+            template += 'Delay between bench cycles: ' + routeData.options.delay + '<br />';
+
+          var requestHeaders = 'none',
+              requestData = 'none',
+              requestQuery = 'none';
+
+          if(!!routeData.request.headers)
+            requestHeaders = '<br /><pre><code>' + JSON.stringify(routeData.request.headers, undefined, 2) + '</pre></code>';
+
+          if(!!routeData.request.data)
+            requestData = '<br /><pre><code>' + JSON.stringify(routeData.request.data, undefined, 2) + '</pre></code>';
+
+          if(!!routeData.request.query)
+            requestQuery = '<br /><pre><code>' + JSON.stringify(routeData.request.query, undefined, 2) + '</pre></code>';
+
+          template += '<br />Headers sent: ' + requestHeaders + '<br />Data sent: ' + requestData + '<br />Query sent: ' + requestQuery + '<br /></div><div class="response panel hide">Data here refers to the first sampled response.<br /><br />';
+
+          var responseHeader = JSON.stringify(routeData.response.header, undefined, 2),
+              responseBody = '';
+
+          try {
+            responseBody = JSON.stringify(JSON.parse(decodeHtml(routeData.response.body)), undefined, 2);
+          } catch(e){
+            responseBody = decodeHtml(routeData.response.body);
+          }
+
+          template += 'Response status: ' + routeData.response.statusCode + '<br />Response headers:<br />' +
+            '<pre><code>' + responseHeader + '</code></pre>' +
+            '<br />Response body:<br /><pre><code>' + responseBody + '</code></pre><br /></div></div>';
+
+          return template;
+        }
+      };
+
+      var bindButtons = function(){
+        var bindButton = function(panelName){
+          $(selectors.buttons[panelName]).click(function(){
+            var $sender = $(this),
+                $panelsContainer = $sender.parent().parent();
+
+            $panelsContainer.find(selectors.button).removeClass('selected');
+            $sender.addClass('selected');
+
+            $panelsContainer.find(selectors.panel).addClass('hide');
+            $panelsContainer.find(selectors.panels[panelName]).removeClass('hide');
+
+            return false;
+          });
+        };
+
+        bindButton('stats');
+        bindButton('distribution');
+        bindButton('response');
+        bindButton('request');
+      };
+
+      $(function(){
+        $(selectors.reportDetails).append(templates.reportDetails(data.info));
+
+        var counter = 0;
+        for(serviceName in data.benchmark){
+          for(routeName in data.benchmark[serviceName]){
+            $(selectors.charts).append(templates.route(data.benchmark[serviceName][routeName], counter));
+
+            var samples = data.benchmark[serviceName][routeName]['stats']['sample'],
+                meanArray = [],
+                mean = data.benchmark[serviceName][routeName]['stats']['mean'],
+                singleMeanArray = [],
+                singleMean = data.benchmark[serviceName][routeName]['stats']['singleMean'],
+                maxMeanArray = [],
+                maxMean = data.benchmark[serviceName][routeName].options.maxMean !== undefined,
+                maxSingleMeanArray = [],
+                maxSingleMean = data.benchmark[serviceName][routeName].options.maxSingleMean !== undefined,
+                errorsArray = [],
+                areThereSomeErrors = false;
+
+            for(var i = 0; i < samples.length; i++){
+              meanArray.push(mean);
+              singleMeanArray.push(singleMean);
+
+              errorsArray.push(null);
+
+              if(maxMean)
+                maxMeanArray.push(data.benchmark[serviceName][routeName].options.maxMean);
+
+              if(maxSingleMean)
+                maxSingleMeanArray.push(data.benchmark[serviceName][routeName].options.maxSingleMean);
+            }
+
+            for(var errorType in data.benchmark[serviceName][routeName].errors){
+              var errorsOfType = data.benchmark[serviceName][routeName]['errors'][errorType];
+              for(var i = 0; i < errorsOfType.length; i++){
+                if(errorsOfType[i].pos !== undefined){
+                  errorsArray[errorsOfType[i].pos] = data.benchmark[serviceName][routeName]['stats']['sample'][errorsOfType[i].pos];
+                  areThereSomeErrors = true;
+                }
+              }
+            }
+
+            var getSeriesOptions = function(label, color){
+              return {
+                showMarker: false,
+                pointLabels: { show: true },
+                label: label,
+                color: color
+              };
+            };
+
+            var lines = [samples],
+                series = [getSeriesOptions('Samples', '#6699FF')];
+
+            if(maxMean){
+              lines.push(maxMeanArray);
+              series.push(getSeriesOptions('Max Mean', '#F90'));
+            }
+
+            lines.push(meanArray);
+            series.push(getSeriesOptions('Mean', '#66FF00'));
+
+            if(maxSingleMean){
+              lines.push(maxSingleMeanArray);
+              series.push(getSeriesOptions('Max Single Mean (*)', '#EBFF00'));
+
+              lines.push(singleMeanArray);
+              series.push(getSeriesOptions('Single mean', '#FC6333'));
+            }
+
+            if(areThereSomeErrors > 0){
+              lines.push(errorsArray);
+              series.push({
+                showLine:false,
+                markerOptions: { size: 7, style:'x' },
+                label: 'Errors',
+                color: '#FF0000'
+              });
+            }
+
+            var options = {
+              title: {
+                text: data.benchmark[serviceName][routeName]['name'],
+                color: '#F1F1F1'
+              },
+              animate: true,
+              grid: {
+                background: '#000000', textColor: '#F1F1F1'
+              },
+              seriesDefaults:{
+                rendererOptions: {
+                  showDataLabels: true
+                }
+              },
+              highlighter: {
+                show: true,
+                sizeAdjust: 7.5
+              },
+              cursor:{
+                show: true,
+                zoom:true,
+              },
+              legend: {
+                show:true,
+                location: 'se',
+                background: 'rgba(101, 0, 253, 0.89)'
+              },
+              axesDefaults: {
+                labelRenderer: $.jqplot.CanvasAxisLabelRenderer
+              },
+              axes: {
+                xaxis: {
+                  label: 'Samples',
+                  pad: 0
+                },
+                yaxis: {
+                  label: 'Response time (seconds)',
+                  tickOptions: {
+                    formatString:'%.6f'
+                  }
+                }
+              },
+              series: series
+            };
+
+            $.jqplot('chart' + counter, lines, options);
+            counter++;
+          }
+        }
+        hljs.initHighlightingOnLoad();
+        bindButtons();
+      });
+
+      $(function(){
+        var counter = 0;
+        for(serviceName in data.benchmark){
+          for(routeName in data.benchmark[serviceName]){
+            var samples = data.benchmark[serviceName][routeName]['stats']['sample'];
+            var sortedSamples = _.orderBy(samples);
+            var totalDelta = sortedSamples[sortedSamples.length - 1] - sortedSamples[0];
+
+            var bucketCount = ~~Math.min(totalDelta*1000, sortedSamples.length);
+            var delta = totalDelta/bucketCount;
+
+            var buckets = [[sortedSamples[0] + delta/2.0, 0]];
+
+            for (var i = 0; i < samples.length; i++) {
+              var s = sortedSamples[i];
+              while(s > (sortedSamples[0] + buckets.length * delta)) {
+                buckets.push([(sortedSamples[0] + buckets.length * delta + delta/2.0), 0]);
+              }
+              buckets[buckets.length - 1][1]++;
+            }
+
+            buckets = _.map(buckets, function(b){
+              return [b[0], 100*b[1]/samples.length];
+            });
+
+
+            var lines = [buckets],
+                series = [{
+                  showMarker: false,
+                  pointLabels: { show: true },
+                  label: 'Samples',
+                  color: '#6699FF',
+                  rendererOptions: {
+                    smooth: true
+                  }
+                }];
+
+            var options = {
+              title: {
+                text: data.benchmark[serviceName][routeName]['name'],
+                color: '#F1F1F1'
+              },
+              animate: true,
+              grid: {
+                background: '#000000', textColor: '#F1F1F1'
+              },
+              seriesDefaults:{
+                rendererOptions: {
+                  showDataLabels: true
+                }
+              },
+              highlighter: {
+                show: true,
+                sizeAdjust: 7.5
+              },
+              legend: {
+                show:true,
+                location: 'se',
+                background: 'rgba(101, 0, 253, 0.89)'
+              },
+              cursor:{
+                show: true,
+                zoom:true,
+              },
+              axesDefaults: {
+                labelRenderer: $.jqplot.CanvasAxisLabelRenderer
+              },
+              axes: {
+                xaxis: {
+                  label: 'Response time (seconds)',
+                  tickOptions: {
+                    formatString:'%.3f'
+                  }
+                },
+                yaxis: {
+                  label: 'Percent of responses',
+                  tickOptions: {
+                    formatString: '%.1f%'
+                  }
+                }
+              },
+              series: series
+            };
+
+            $.jqplot('distchart' + counter, lines, options);
+            counter++;
+          }
+        }
+        $(".distribution.panel").addClass('hide');
+      });
+    </script>
+  </body>
+</html>

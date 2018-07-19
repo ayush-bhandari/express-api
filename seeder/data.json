@@ -1,0 +1,19 @@
+{
+	"users":{
+	    "name": "Ayush Bhandari",
+	    "email": "aayushbhandari@yahoo.com",
+	    "gender": "male",
+	    "age": "23",
+	    "fb_id": "1892",
+	    "created": {
+	        "$date": "2017-06-13T10:44:35.891Z"
+	    },
+	    "__v": 0
+	},
+	"foodaverageratings":{},
+	"foodimages":{},
+	"ratings":{},
+	"restaurantaverageratings":{},
+	"restaurantimages":{},
+	"reviews":{},
+}

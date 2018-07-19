@@ -1,0 +1,57 @@
+{
+  "name": "Express API",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "dev": "set NODE_ENV=dev&& nodemon server.js -L --exec babel-node",
+    "prod": "set NODE_ENV=prod&& pm2 start --no-daemon process.json",
+    "test": "mocha --timeout 10000",
+    "benchmark": "node benchmark.js"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.88.0",
+    "body-parser": "^1.17.1",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.3",
+    "cors": "^2.8.3",
+    "ejs": "^2.5.6",
+    "express": "^4.15.2",
+    "express-rate-limit": "^2.8.0",
+    "express-session": "^1.15.3",
+    "express-validation": "^1.0.2",
+    "fs": "0.0.1-security",
+    "haversine": "^1.0.2",
+    "jsonwebtoken": "^7.4.1",
+    "lodash": "^4.17.4",
+    "mime": "^1.3.6",
+    "moment": "^2.18.1",
+    "mongodb": "^2.2.26",
+    "mongoose": "^4.9.9",
+    "mongoose-seeder": "^1.2.1",
+    "mongoose-type-email": "^1.0.5",
+    "morgan": "^1.8.1",
+    "multer": "^1.3.0",
+    "node-schedule": "^1.2.3",
+    "request": "^2.81.0",
+    "rotating-file-stream": "^1.2.2"
+  },
+  "devDependencies": {
+    "api-benchmark": "^0.4.2",
+    "babel-cli": "^6.24.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "chai": "^3.5.0",
+    "chai-http": "^3.0.0",
+    "mocha": "^3.4.2",
+    "nodemon": "^1.10.0"
+  },
+  "engines": {
+    "node": "6.9.1"
+  },
+  "repository": {
+    "type": "git"
+  },
+  "author": "Ayush Bhandari <aayushbhandari@yahoo.com> <aayushbhandari1993@gmail.com> (ayushbhandari.com.np)",
+  "license": "MIT"
+}

@@ -1,0 +1,21 @@
+{
+  "apps": [
+      {
+          "name": "server",
+          "script": "./server.js",
+          "watch": true,
+          "merge_logs": true,
+          "max_restarts": 100,
+          "instances": 1,
+          "max_memory_restart": "200M",
+          "exec_mode": "cluster",
+          "log_file": "./logs/server.log",
+          "ignore_watch" : ["./node_modules", "./logs"],
+          "log_date_format" : "MM/DD/YYYY HH:mm:ss",
+          "env": {
+              "PORT": 3000,
+              "NODE_ENV": "prod"
+          }
+      }
+  ]
+}
